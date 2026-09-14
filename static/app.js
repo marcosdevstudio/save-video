@@ -61,7 +61,15 @@ async function inspect() {
 
 async function download() {
   const button = $("#download");
+  const progress = $("#download-progress");
+  const progressBar = $("#progress-bar");
+  const progressPercent = $("#progress-percent");
+  const progressText = $("#progress-text");
   button.disabled = true;
+  progress.classList.remove("hidden");
+  progressBar.style.width = "0%";
+  progressPercent.textContent = "0%";
+  progressText.textContent = "Preparando arquivo";
   button.querySelector("span").textContent = "Preparando arquivo...";
   setMessage("O servidor está preparando seu download...");
   try {
@@ -77,9 +85,14 @@ async function download() {
       status = statusData.status;
       if (status === "queued") {
         setMessage("Download aguardando na fila...");
+        progressText.textContent = "Aguardando na fila";
       } else {
-        const progress = statusData.progress ? ` ${statusData.progress}%` : "";
+        const percent = Math.min(100, Math.max(0, Number(statusData.progress) || 0));
+        const progress = percent ? ` ${percent}%` : "";
         const speed = statusData.speed ? ` · ${statusData.speed}` : "";
+        progressBar.style.width = `${percent}%`;
+        progressPercent.textContent = `${percent}%`;
+        progressText.textContent = percent >= 100 ? "Finalizando arquivo" : "Baixando arquivo";
         setMessage(`Baixando arquivo...${progress}${speed}`);
       }
     }
@@ -93,6 +106,9 @@ async function download() {
     link.download = filename;
     link.click();
     URL.revokeObjectURL(link.href);
+    progressBar.style.width = "100%";
+    progressPercent.textContent = "100%";
+    progressText.textContent = "Download concluído";
     setMessage("Download concluído. O arquivo foi salvo pelo navegador.");
   } catch (error) {
     setMessage(error.message, true);

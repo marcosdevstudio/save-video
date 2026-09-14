@@ -43,6 +43,10 @@
             <label class="toggle"><input id="audio" type="checkbox"><span></span><b>Somente áudio</b><small>MP3</small></label>
             <label class="toggle"><input id="no-watermark" type="checkbox"><span></span><b>Sem marca d'água</b></label>
           </div>
+          <div id="download-progress" class="download-progress hidden" aria-live="polite">
+            <div class="progress-label"><span id="progress-text">Preparando arquivo</span><strong id="progress-percent">0%</strong></div>
+            <div class="progress-track"><div id="progress-bar" class="progress-bar"></div></div>
+          </div>
           <button id="download" class="download-button" disabled><span>Baixar agora</span><strong>↓</strong></button>
         </div>
       </section>

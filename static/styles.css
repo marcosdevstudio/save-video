@@ -56,6 +56,11 @@ button:disabled { cursor: wait; opacity: .55; }
 .quality-option { color: var(--muted); background: #0a1828; border: 1px solid #23415e; border-radius: 9px; padding: 12px 7px; text-align: center; font-size: 12px; }
 .quality-option.selected { color: var(--night); background: var(--lime); border-color: var(--lime); font-weight: 700; }
 .settings-row { display: flex; flex-wrap: wrap; gap: 17px; margin: 24px 0; }
+.download-progress { margin: 4px 0 20px; }
+.progress-label { display: flex; justify-content: space-between; margin-bottom: 8px; color: var(--muted); font-size: 11px; }
+.progress-label strong { color: var(--lime); font-weight: 700; }
+.progress-track { height: 9px; overflow: hidden; background: #091726; border: 1px solid #23415e; border-radius: 20px; }
+.progress-bar { width: 0; height: 100%; background: linear-gradient(90deg, var(--cyan), var(--lime)); border-radius: inherit; box-shadow: 0 0 14px rgba(196,242,107,.35); transition: width .35s ease; }
 .toggle { display: flex; align-items: center; gap: 8px; color: var(--muted); cursor: pointer; font-size: 11px; }
 .toggle input { display: none; }
 .toggle span { width: 31px; height: 18px; position: relative; display: block; background: #21384e; border-radius: 20px; transition: background .2s; }
