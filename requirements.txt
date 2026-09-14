@@ -1,0 +1,6 @@
+yt-dlp>=2025.6.9
+rich>=13.7.0
+pytest>=8.3.0
+Flask>=3.1.0
+gunicorn>=23.0.0; platform_system != "Windows"
+waitress>=3.0.0; platform_system == "Windows"
