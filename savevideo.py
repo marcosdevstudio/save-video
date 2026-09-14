@@ -25,6 +25,10 @@ SUPPORTED_HOSTS = (
 )
 
 
+class DownloadError(RuntimeError):
+    """Erro de download preservando a causa para interfaces web e CLI."""
+
+
 def sanitize_title(title: str) -> str:
     cleaned = re.sub(r"[\\/:*?\"<>|]", "", title)
     return cleaned.strip()[:180] or "download"
@@ -258,7 +262,7 @@ def download_video(
             progress.update(task_id, completed=100)
     except Exception as exc:  # pragma: no cover - feedback ao usuário
         stderr_console.print(f"[bold red]Erro:[/bold red] {exc}")
-        raise SystemExit(1) from exc
+        raise DownloadError(str(exc)) from exc
 
     console.print("[bold green]Download concluído![/bold green]")
 
@@ -267,15 +271,18 @@ def main() -> None:
     parser = build_parser()
     args = parser.parse_args()
 
-    download_video(
-        url=args.url,
-        output_dir=args.output_dir,
-        format_string=args.format,
-        audio_only=args.audio_only,
-        no_playlist=args.no_playlist,
-        no_watermark=args.no_watermark,
-        cookie_file=args.cookie_file,
-    )
+    try:
+        download_video(
+            url=args.url,
+            output_dir=args.output_dir,
+            format_string=args.format,
+            audio_only=args.audio_only,
+            no_playlist=args.no_playlist,
+            no_watermark=args.no_watermark,
+            cookie_file=args.cookie_file,
+        )
+    except DownloadError:
+        raise SystemExit(1)
 
 
 if __name__ == "__main__":
