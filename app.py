@@ -80,14 +80,14 @@ def format_duration(seconds: int | float | None) -> str:
 
 def format_for_quality(quality: str | None) -> str:
     if quality == "best" or not quality:
-        return "bestvideo+bestaudio/best"
+        return "best/bestvideo+bestaudio"
     try:
         height = int(quality)
     except (TypeError, ValueError) as exc:
         raise ValueError("Qualidade inválida") from exc
     if height < 1 or height > 4320:
         raise ValueError("Qualidade inválida")
-    return f"bestvideo[height<={height}]+bestaudio/best[height<={height}]"
+    return f"best[height<={height}]/bestvideo[height<={height}]+bestaudio/best[height<={height}]"
 
 
 @app.get("/")
