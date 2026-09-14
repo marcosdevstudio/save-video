@@ -81,4 +81,30 @@ footer a:hover, .back-link:hover { text-decoration: underline; }
 .back-link { display: inline-block; margin-top: 30px; font-weight: 700; }
 @keyframes rise { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
 @media (max-width: 800px) { .page-shell { padding: 0 20px; } .workspace { grid-template-columns: 1fr; gap: 38px; padding: 55px 0 45px; } .intro h1 { font-size: clamp(46px, 15vw, 68px); } .intro-copy { max-width: 520px; } .source-list { margin-top: 24px; } }
-@media (max-width: 520px) { .topbar { height: 76px; } .status-pill { font-size: 0; } .status-pill i { width: 8px; height: 8px; } .url-row { flex-direction: column; } .primary-button { padding: 13px; } .quality-grid { grid-template-columns: repeat(3, 1fr); } footer { gap: 12px; flex-direction: column; } }
+@media (max-width: 520px) {
+  .page-shell { padding: 0 14px; }
+  .topbar { height: 70px; }
+  .brand { gap: 8px; font-size: 15px; }
+  .brand-logo { width: 30px; height: 30px; }
+  .status-pill { font-size: 0; }
+  .status-pill i { width: 8px; height: 8px; }
+  .workspace { gap: 28px; padding: 38px 0 34px; }
+  .intro h1 { margin: 14px 0 16px; font-size: clamp(42px, 14vw, 60px); letter-spacing: -2px; }
+  .intro-copy { font-size: 14px; line-height: 1.6; }
+  .source-list { gap: 10px; margin-top: 22px; font-size: 10px; }
+  .source-list span::before { margin-right: 10px; }
+  .tool-card { border-radius: 18px; padding: 22px 16px; }
+  .card-top { margin-bottom: 24px; }
+  .url-row { flex-direction: column; gap: 9px; }
+  input[type=url] { min-height: 48px; font-size: 16px; }
+  .primary-button { min-height: 48px; padding: 13px; }
+  .result h2 { max-width: calc(100vw - 110px); font-size: 16px; }
+  .quality-head { gap: 12px; align-items: baseline; }
+  .quality-note { text-align: right; }
+  .quality-grid { grid-template-columns: repeat(3, 1fr); gap: 7px; }
+  .quality-option { min-height: 43px; padding: 11px 4px; }
+  .settings-row { gap: 14px; margin: 20px 0; }
+  .toggle { min-height: 28px; }
+  .download-button { min-height: 52px; }
+  footer { gap: 12px; flex-direction: column; line-height: 1.5; }
+}
