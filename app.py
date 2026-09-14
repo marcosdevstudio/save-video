@@ -142,6 +142,17 @@ def run_download_job(job_id: str, url: str, format_string: str, audio_only: bool
     try:
         with jobs_lock:
             jobs[job_id]["status"] = "downloading"
+
+        def progress_hook(data: dict) -> None:
+            with jobs_lock:
+                if data.get("status") == "finished":
+                    jobs[job_id].update({"progress": 100, "speed": "finalizando"})
+                elif data.get("status") == "downloading":
+                    total = data.get("total_bytes") or data.get("total_bytes_estimate")
+                    downloaded = data.get("downloaded_bytes", 0)
+                    percent = round(downloaded * 100 / total) if total else 0
+                    jobs[job_id].update({"progress": percent, "speed": data.get("speed_str") or ""})
+
         download_video(
             url=url,
             output_dir=str(work_dir),
@@ -150,6 +161,7 @@ def run_download_job(job_id: str, url: str, format_string: str, audio_only: bool
             no_playlist=True,
             no_watermark=no_watermark,
             cookie_file=None,
+            progress_callback=progress_hook,
         )
         files = [path for path in work_dir.iterdir() if path.is_file()]
         if not files:
@@ -200,7 +212,7 @@ def download_status(job_id: str):
             return jsonify({"error": "Download não encontrado."}), 404
         if job["status"] == "error":
             return jsonify({"status": "error", "error": job["error"]}), 422
-        return jsonify({"status": job["status"]})
+        return jsonify({"status": job["status"], "progress": job.get("progress", 0), "speed": job.get("speed", "")})
 
 
 @app.get("/api/download/<job_id>/file")

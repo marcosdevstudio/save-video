@@ -75,7 +75,13 @@ async function download() {
       const statusData = await statusResponse.json();
       if (!statusResponse.ok) throw new Error(statusData.error || "O download falhou.");
       status = statusData.status;
-      setMessage(status === "queued" ? "Download aguardando na fila..." : "Baixando e preparando seu arquivo...");
+      if (status === "queued") {
+        setMessage("Download aguardando na fila...");
+      } else {
+        const progress = statusData.progress ? ` ${statusData.progress}%` : "";
+        const speed = statusData.speed ? ` · ${statusData.speed}` : "";
+        setMessage(`Baixando arquivo...${progress}${speed}`);
+      }
     }
     const fileResponse = await fetch(`/api/download/${job.job_id}/file`);
     if (!fileResponse.ok) throw new Error("O arquivo não ficou disponível.");

@@ -5,6 +5,7 @@ import argparse
 import os
 import re
 import sys
+from collections.abc import Callable
 from pathlib import Path
 
 from rich.console import Console
@@ -200,6 +201,7 @@ def download_video(
     no_playlist: bool,
     no_watermark: bool,
     cookie_file: str | None,
+    progress_callback: Callable[[dict], None] | None = None,
 ) -> None:
     destination = Path(output_dir)
     destination.mkdir(parents=True, exist_ok=True)
@@ -232,6 +234,8 @@ def download_video(
     )
     ydl_options["ffmpeg_location"] = str(Path(ffmpeg_path).parent)
     ydl_options["ffprobe_location"] = str(Path(ffprobe_path).parent)
+    if progress_callback:
+        ydl_options["progress_hooks"] = [progress_callback]
 
     try:
         with Progress(
