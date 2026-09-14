@@ -5,6 +5,7 @@ import tempfile
 import threading
 import time
 import uuid
+import logging
 from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 from urllib.parse import urlparse
@@ -14,6 +15,7 @@ from flask import Flask, jsonify, render_template, request, send_file
 from savevideo import inspect_video, download_video
 
 app = Flask(__name__)
+logger = logging.getLogger(__name__)
 app.config["MAX_CONTENT_LENGTH"] = 16 * 1024
 
 ALLOWED_HOSTS = ("youtube.com", "youtu.be", "instagram.com", "tiktok.com")
@@ -105,7 +107,9 @@ def privacy():
 
 @app.get("/health")
 def health():
-    return jsonify({"status": "ok"})
+    ffmpeg = shutil.which("ffmpeg")
+    ffprobe = shutil.which("ffprobe")
+    return jsonify({"status": "ok", "ffmpeg": bool(ffmpeg), "ffprobe": bool(ffprobe)})
 
 
 @app.post("/api/inspect")
@@ -155,10 +159,12 @@ def run_download_job(job_id: str, url: str, format_string: str, audio_only: bool
             jobs[job_id].update({"status": "ready", "path": result, "work_dir": work_dir, "filename": result.name})
     except SystemExit:
         shutil.rmtree(work_dir, ignore_errors=True)
+        logger.exception("Download failed with SystemExit for job %s", job_id)
         with jobs_lock:
-            jobs[job_id].update({"status": "error", "error": "O download falhou. Verifique o link e tente novamente."})
+            jobs[job_id].update({"status": "error", "error": "O servidor não conseguiu gerar o arquivo. Verifique os logs do deploy."})
     except Exception as exc:
         shutil.rmtree(work_dir, ignore_errors=True)
+        logger.exception("Download failed for job %s", job_id)
         with jobs_lock:
             jobs[job_id].update({"status": "error", "error": str(exc)})
 
