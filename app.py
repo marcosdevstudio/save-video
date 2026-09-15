@@ -12,7 +12,7 @@ from urllib.parse import urlparse
 
 from flask import Flask, jsonify, render_template, request, send_file
 
-from savevideo import inspect_video, download_video
+from savevideo import inspect_video, download_video, resolve_ffmpeg_paths
 
 app = Flask(__name__)
 logger = logging.getLogger(__name__)
@@ -107,9 +107,14 @@ def privacy():
 
 @app.get("/health")
 def health():
-    ffmpeg = shutil.which("ffmpeg")
-    ffprobe = shutil.which("ffprobe")
-    return jsonify({"status": "ok", "ffmpeg": bool(ffmpeg), "ffprobe": bool(ffprobe)})
+    ffmpeg_path, ffprobe_path = resolve_ffmpeg_paths()
+    return jsonify(
+        {
+            "status": "ok",
+            "ffmpeg": Path(ffmpeg_path).exists() or bool(shutil.which(ffmpeg_path)),
+            "ffprobe": Path(ffprobe_path).exists() or bool(shutil.which(ffprobe_path)),
+        }
+    )
 
 
 @app.post("/api/inspect")
